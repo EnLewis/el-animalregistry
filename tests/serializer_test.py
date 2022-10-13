@@ -34,3 +34,12 @@ def test_serialize_to_yaml(factory, register_factory, fake_animal):
     yaml_animal = factory.create_animal("YAML", **asdict(fake_animal))
 
     assert str(yaml_animal) == yaml.dump(asdict(fake_animal))
+
+def test_serialize_json_to_yaml(factory, register_factory, fake_animal):
+    # Swap serializer
+    factory.register_format("JSON", YamlSerializer())
+
+    notjson_animal = factory.create_animal("JSON", **asdict(fake_animal))
+
+    assert str(notjson_animal) == yaml.dump(asdict(fake_animal))
+

@@ -1,6 +1,6 @@
 import json
-from typing import Any, Callable
 import yaml
+from typing import Any, Callable
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
