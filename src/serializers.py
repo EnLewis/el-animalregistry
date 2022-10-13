@@ -1,4 +1,9 @@
+import json
+from typing import Any, Callable
+import yaml
+
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 class AnimalFactory:
     def __init__(self):
@@ -24,7 +29,7 @@ class Serializer(ABC):
     def add_param(self, key: str, val: str):
         pass
 
-    def to_str(self) -> str:
+    def to_str(self) -> Callable:
         pass
 
 
@@ -36,14 +41,24 @@ class JsonSerializer(Serializer):
     def __call__(self, **kwargs):
         for key, val in kwargs.items():
             self.add_param(key, val)
-        return self._data
+        animal = Animal(self._data, self.to_str())
+        return animal
 
     def add_param(self, key: str, val: str):
         self._data[key] = val
     
-    def to_str(self) -> str:
-        return json.dumps(self._data)
+    def to_str(self) -> Callable:
+        return json.dumps
 
 
-class Animal(ABC):
-    pass
+class YamlSerializer(JsonSerializer):
+    def to_str(self) -> Callable:
+        return yaml.dump
+
+@dataclass
+class Animal():
+    data: Any
+    to_str_method: Callable
+
+    def __str__(self):
+        return self.to_str_method(self.data)
