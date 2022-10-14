@@ -9,6 +9,7 @@ import xml.etree.ElementTree as element_tree
 import json
 import yaml
 from pandas import DataFrame
+import pickle
 
 class AnimalFactory:
     def __init__(self):
@@ -100,8 +101,6 @@ class XmlSerializer(Serializer):
         self.init_data()
         for key, val in kwargs.items():
             self.add_param(key, val)
-        # This is a bit tricky, to preserve the simplicity of the Animal generic can we use partial 
-        # functions to add to the callables default args.
         animal = Animal(data=self._data, 
                         to_str_method=functools.partial(self.to_str_callable, encoding='unicode'), 
                         to_csv_method=self.to_csv_callable)
@@ -128,6 +127,36 @@ class PandasDFSerializer(Serializer):
 
     def init_data(self, data):
         self._data = DataFrame(data={key: [value] for key, value in data.items()})
+    
+    def __call__(self, **kwargs):
+        self.init_data(kwargs)
+        animal = Animal(data=self._data, 
+                        to_str_method=self.to_str_callable, 
+                        to_csv_method=self.to_csv_callable)
+        return animal
+
+class PickleSerializer(Serializer):
+
+    @property
+    def to_str_callable(self) -> Callable:
+        def _to_str(data):
+            # To display a more human readable string here we could use loads instead
+            # but I want to display the data as bytes to better show the format
+            # return str(pickle.loads(data))
+            return data.decode('utf-8')
+        return _to_str
+    
+    @property
+    def to_csv_callable(self) -> Callable:
+        def _to_csv(data) -> tuple[list[str], list[str]]:
+            dict_data = pickle.loads(data)
+            column_headers=list(dict_data.keys())
+            values=list(dict_data.values())
+            return ([column_headers, values])
+        return _to_csv
+
+    def init_data(self, data):
+        self._data = pickle.dumps(data, 0) # Makes sure we only use utf-8 symbols for the to_str method
     
     def __call__(self, **kwargs):
         self.init_data(kwargs)

@@ -3,13 +3,14 @@ import csv
 from rich.table import Table
 from rich.console import Console
 
-from serializers import JsonSerializer, PandasDFSerializer, YamlSerializer, XmlSerializer, AnimalFactory
+from serializers import JsonSerializer, PandasDFSerializer, PickleSerializer, YamlSerializer, XmlSerializer, AnimalFactory
 
 supported_formats = {
     'JSON': JsonSerializer(),
     'XML': XmlSerializer(),
     'YAML': YamlSerializer(),
-    'PANDAS': PandasDFSerializer()
+    'PANDAS': PandasDFSerializer(),
+    'PICKLE': PickleSerializer()
 }
 
 def init_factory():
