@@ -1,5 +1,7 @@
 import json
 import yaml
+import random
+import xml.etree.ElementTree as element_tree
 from typing import Any, Callable
 
 from abc import ABC, abstractmethod
@@ -55,6 +57,23 @@ class YamlSerializer(JsonSerializer):
     def to_str(self) -> Callable:
         return yaml.dump
 
+class XmlSerializer(Serializer):
+    def __init__(self):
+        self._data = element_tree.Element("animal", attrib={'id': str(random.randint(0,10))})
+    
+    def __call__(self, **kwargs):
+        for key, val in kwargs.items():
+            self.add_param(key, val)
+        animal = XmlAnimal(self._data, self.to_str())
+        return animal
+    
+    def add_param(self, key, value):
+        prop = element_tree.SubElement(self._data, key)
+        prop.text = str(value)
+    
+    def to_str(self):
+        return element_tree.tostring
+
 @dataclass
 class Animal():
     data: Any
@@ -62,3 +81,8 @@ class Animal():
 
     def __str__(self):
         return self.to_str_method(self.data)
+
+@dataclass 
+class XmlAnimal(Animal):
+    def __str__(self):
+        return self.to_str_method(self.data, encoding='unicode')
