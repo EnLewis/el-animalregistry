@@ -26,7 +26,7 @@ def register_factory(factory):
     factory.register_format("YAML", YamlSerializer())
     factory.register_format("XML", XmlSerializer())
     factory.register_format("PANDAS", PandasDFSerializer())
-    factory.register_format("PICKLE", PandasDFSerializer())
+    factory.register_format("PICKLE", PickleSerializer())
 
 @pytest.fixture
 def fake_animal():
@@ -67,6 +67,12 @@ def test_serialize_json_to_yaml(factory, register_factory, fake_animal):
     notjson_animal = factory.create_animal("JSON", **asdict(fake_animal))
 
     assert str(notjson_animal) == yaml.dump(asdict(fake_animal))
+
+def test_serializer_to_pickle(factory, register_factory, fake_animal):
+    pickle_animal = factory.create_animal("PICKLE", **asdict(fake_animal))
+
+    assert type(pickle_animal.data) == bytes
+    assert str(pickle_animal) == str(asdict(fake_animal))
 
 def test_deserialize_to_csv(factory, register_factory, fake_animal):
     xml_animal = factory.create_animal("XML", **asdict(fake_animal))
