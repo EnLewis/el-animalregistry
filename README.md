@@ -35,7 +35,7 @@ options:
 ```
 
 # Enhancements
-Adding support for collecting animals together into group formats rather than individuals. This could be done through adding overriding the concatonation operator for the animal object with the serializer, then contonating the objects instead of appending them to a list.
+Adding support for collecting animals together into group formats rather than individuals. This could be done through overriding the concatonation operator for the animal object with the serializer, then contonating the objects instead of appending them to a list.
 
 # Clarifications
 - 'query a list of supported formats', query implies searchability. Does this need to support search or is it enough to provide the supported formats in a help string.
