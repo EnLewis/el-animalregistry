@@ -142,7 +142,7 @@ class PickleSerializer(Serializer):
     @property
     def to_str_callable(self) -> Callable:
         def _to_str(data):
-            return str(pickle.loads(data))
+            return str(pickle.dumps(data))
         return _to_str
     
     @property
