@@ -142,7 +142,10 @@ class PickleSerializer(Serializer):
     @property
     def to_str_callable(self) -> Callable:
         def _to_str(data):
-            return str(pickle.dumps(data))
+            # To display a more human readable string here we could use loads instead
+            # but I want to display the data as bytes to better show the format
+            # return str(pickle.loads(data))
+            return data.decode('utf-8')
         return _to_str
     
     @property
@@ -155,7 +158,7 @@ class PickleSerializer(Serializer):
         return _to_csv
 
     def init_data(self, data):
-        self._data = pickle.dumps(data)
+        self._data = pickle.dumps(data, 0) # Makes sure we only use utf-8 symbols for the to_str method
     
     def __call__(self, **kwargs):
         self.init_data(kwargs)
