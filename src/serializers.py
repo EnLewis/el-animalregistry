@@ -9,6 +9,7 @@ import xml.etree.ElementTree as element_tree
 import json
 import yaml
 from pandas import DataFrame
+import pickle
 
 class AnimalFactory:
     def __init__(self):
@@ -128,6 +129,33 @@ class PandasDFSerializer(Serializer):
 
     def init_data(self, data):
         self._data = DataFrame(data={key: [value] for key, value in data.items()})
+    
+    def __call__(self, **kwargs):
+        self.init_data(kwargs)
+        animal = Animal(data=self._data, 
+                        to_str_method=self.to_str_callable, 
+                        to_csv_method=self.to_csv_callable)
+        return animal
+
+class PickleSerializer(Serializer):
+
+    @property
+    def to_str_callable(self) -> Callable:
+        def _to_str(data):
+            return str(pickle.loads(data))
+        return _to_str
+    
+    @property
+    def to_csv_callable(self) -> Callable:
+        def _to_csv(data) -> tuple[list[str], list[str]]:
+            dict_data = pickle.loads(data)
+            column_headers=list(dict_data.keys())
+            values=list(dict_data.values())
+            return ([column_headers, values])
+        return _to_csv
+
+    def init_data(self, data):
+        self._data = pickle.dumps(data)
     
     def __call__(self, **kwargs):
         self.init_data(kwargs)
