@@ -22,3 +22,8 @@ ex:
 ```
 python src/main.py -h | --help
 ```
+
+# Clarifications
+- 'query a list of supported formats', query implies searchability. Does this need to support search or is it enough to provide the supported formats in a help string.
+- I'm not sure where to go with display the data. Does this want me to display in different applications? (Webpage, console output, excel) or different styles? (Dataframe, graph, list, table). For now I've chosen to display it in console as raw strings and in a table, would that be sufficient?
+

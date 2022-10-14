@@ -30,7 +30,6 @@ class AnimalFactory:
 
 class Serializer(ABC):
     
-
     @property
     def to_str_callable(self) -> Callable:
         pass
@@ -95,7 +94,7 @@ class XmlSerializer(Serializer):
         return _to_csv
     
     def init_data(self):
-        self._data = element_tree.Element(self.header, attrib={'id': str(random.randint(0,10))})
+        self._data = element_tree.Element(self.header, attrib={'id': str(random.randint(0,1000))})
     
     def __call__(self, **kwargs):
         self.init_data()
