@@ -30,7 +30,7 @@ def main(factory, fp, format):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='International Animal Registry')
     parser.add_argument('-f', metavar='F', type=str, required=True, help="File containing personal data.")
-    parser.add_argument('--format', metavar='FR', type=str, choices=list(supported_formats.keys()), required=True, help='Format to serialize data into. Allowed values are '+', '.join(list(supported_formats.keys())))
+    parser.add_argument('--format', metavar='FR', type=str, choices=list(supported_formats.keys()), required=True, help='Format to serialize data into. Allowed formats are '+', '.join(list(supported_formats.keys())))
     args = parser.parse_args()
     
     factory = init_factory()
