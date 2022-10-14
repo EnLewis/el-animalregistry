@@ -115,7 +115,7 @@ class PandasDFSerializer(Serializer):
     
     @property
     def to_str_callable(self) -> Callable:
-        return self._data.to_string
+        return DataFrame.to_string
 
     @property
     def to_csv_callable(self):

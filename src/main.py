@@ -19,7 +19,7 @@ def init_factory():
     return factory
 
 def main(factory, fp, format):
-    
+
     # Prep data
     animals = []
     with open(fp, newline='') as f:
