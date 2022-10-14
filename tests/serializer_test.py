@@ -78,4 +78,10 @@ def test_deserialize_to_csv(factory, register_factory, fake_animal):
     # Desirializing to csv should result in the same result for all formats
     assert xml_animal.to_csv() == json_animal.to_csv() == yaml_animal.to_csv() == pandas_animal.to_csv()
     
+def test_concat_pandas(factory, register_factory, fake_animal):
+    pandas_animal1 = factory.create_animal("PANDAS", **asdict(fake_animal))
+    pandas_animal2 = factory.create_animal("PANDAS", **asdict(fake_animal))
 
+    pandas_animal3 =  (pandas_animal1 + pandas_animal2)
+    print(pandas_animal3)
+    assert pandas_animal3.data.empty != True

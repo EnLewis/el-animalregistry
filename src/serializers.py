@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import xml.etree.ElementTree as element_tree
 import json
 import yaml
-from pandas import DataFrame
+import pandas
 
 class AnimalFactory:
     def __init__(self):
@@ -115,7 +115,7 @@ class PandasDFSerializer(Serializer):
     
     @property
     def to_str_callable(self) -> Callable:
-        return DataFrame.to_string
+        return pandas.DataFrame.to_string
 
     @property
     def to_csv_callable(self):
@@ -126,14 +126,21 @@ class PandasDFSerializer(Serializer):
             return ([column_headers, values])
         return _to_csv
 
+    @property
+    def concat(self):
+        def _concat(data, other):
+            return pandas.concat([data,other])
+        return _concat
+    
     def init_data(self, data):
-        self._data = DataFrame(data={key: [value] for key, value in data.items()})
+        self._data = pandas.DataFrame(data={key: [value] for key, value in data.items()})
     
     def __call__(self, **kwargs):
         self.init_data(kwargs)
         animal = Animal(data=self._data, 
                         to_str_method=self.to_str_callable, 
-                        to_csv_method=self.to_csv_callable)
+                        to_csv_method=self.to_csv_callable,
+                        concat_method=self.concat)
         return animal
 
 @dataclass
@@ -141,9 +148,23 @@ class Animal():
     data: Any
     to_str_method: Callable
     to_csv_method: Callable
+    concat_method: Callable = None
 
     def __str__(self):
         return self.to_str_method(self.data)
     
+    # TODO: These additions should deep copy. I think their data is going to be linked to
+    # their returned copy's data.
+    def __add__(self, other):
+        data = self.concat_method(self.data, other.data)
+        return type(self)(data, self.to_str_method, self.to_csv_method, self.concat_method)
+    
+    def __radd__(self, other):
+        data = self.concat_method(self.data, other.data)
+        return type(self)(data, self.to_str_method, self.to_csv_method, self.concat_method)
+
     def to_csv(self):
         return self.to_csv_method(self.data)
+    
+    def __copy__(self):
+        return type(self)(self.data, self.to_str_method, self.to_csv_method, self.concat_method)
