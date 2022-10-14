@@ -101,8 +101,6 @@ class XmlSerializer(Serializer):
         self.init_data()
         for key, val in kwargs.items():
             self.add_param(key, val)
-        # This is a bit tricky, to preserve the simplicity of the Animal generic can we use partial 
-        # functions to add to the callables default args.
         animal = Animal(data=self._data, 
                         to_str_method=functools.partial(self.to_str_callable, encoding='unicode'), 
                         to_csv_method=self.to_csv_callable)

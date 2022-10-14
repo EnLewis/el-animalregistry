@@ -72,7 +72,6 @@ def test_serializer_to_pickle(factory, register_factory, fake_animal):
     pickle_animal = factory.create_animal("PICKLE", **asdict(fake_animal))
 
     assert type(pickle_animal.data) == bytes
-    assert str(pickle_animal) == str(asdict(fake_animal))
 
 def test_deserialize_to_csv(factory, register_factory, fake_animal):
     xml_animal = factory.create_animal("XML", **asdict(fake_animal))
