@@ -2,6 +2,7 @@ import pytest
 import json
 import yaml
 from dataclasses import dataclass, asdict
+import xml.etree.ElementTree as element_tree
 
 from serializers import AnimalFactory, JsonSerializer, XmlSerializer, YamlSerializer
 
@@ -29,6 +30,17 @@ def register_factory(factory):
 def fake_animal():
     return fake_animal_class("Erik", "4033321374", "123 Gelmer St")
 
+@pytest.fixture
+def fake_xml_animal():
+    animal = element_tree.Element("animal", attrib={'id': '2'})
+    prop = element_tree.SubElement(animal, "name")
+    prop.text = str('Erik')
+    prop = element_tree.SubElement(animal, "phone")
+    prop.text = str('4033321374')
+    prop = element_tree.SubElement(animal, "address")
+    prop.text = str("123 Gelmer St")
+    return animal
+
 def test_serialize_to_json(factory, register_factory, fake_animal):
     json_animal = factory.create_animal("JSON", **asdict(fake_animal))
 
@@ -53,4 +65,13 @@ def test_serialize_json_to_yaml(factory, register_factory, fake_animal):
     notjson_animal = factory.create_animal("JSON", **asdict(fake_animal))
 
     assert str(notjson_animal) == yaml.dump(asdict(fake_animal))
+
+def test_deserialize_to_csv(factory, register_factory, fake_animal):
+    xml_animal = factory.create_animal("XML", **asdict(fake_animal))
+    json_animal = factory.create_animal("JSON", **asdict(fake_animal))
+    yaml_animal = factory.create_animal("YAML", **asdict(fake_animal))
+
+    # Desirializing to csv should result in the same result for all formats
+    assert xml_animal.to_csv() == json_animal.to_csv() == yaml_animal.to_csv()
+    
 

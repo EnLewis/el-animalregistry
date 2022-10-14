@@ -24,7 +24,7 @@ def main(factory, fp, format):
     
     for animal in animals:
         new_animal = factory.create_animal(format, **animal)
-        print(new_animal)
+        print(new_animal.to_csv())
 
 
 if __name__ == "__main__":
