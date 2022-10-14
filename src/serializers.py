@@ -31,6 +31,7 @@ class Serializer(ABC):
     def add_param(self, key: str, val: str):
         pass
 
+    @abstractmethod
     def to_str(self) -> Callable:
         pass
 

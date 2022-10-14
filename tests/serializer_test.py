@@ -11,6 +11,9 @@ class fake_animal_class:
     phone: str
     address: str
 
+def validate_xml(xml):
+    return type(str(xml)) is str
+
 @pytest.fixture
 def factory():
     factory = AnimalFactory()
@@ -25,9 +28,6 @@ def register_factory(factory):
 @pytest.fixture
 def fake_animal():
     return fake_animal_class("Erik", "4033321374", "123 Gelmer St")
-
-def validate_xml(xml):
-    return type(str(xml)) is str
 
 def test_serialize_to_json(factory, register_factory, fake_animal):
     json_animal = factory.create_animal("JSON", **asdict(fake_animal))
