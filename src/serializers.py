@@ -74,6 +74,10 @@ class XmlSerializer(Serializer):
     header="animal"
 
     @property
+    def to_str_callable(self) -> Callable:
+        return element_tree.tostring
+
+    @property
     def to_csv_callable(self):
         def _to_csv(xml) -> tuple[list[str], list[str]]:
             column_headers=[ele.tag for ele in xml.findall('*')]
@@ -88,18 +92,13 @@ class XmlSerializer(Serializer):
         # This is a bit tricky, to preserve the simplicity of the Animal generic can we use partial 
         # functions to add to the callables default args.
         animal = Animal(data=self._data, 
-                        to_str_method=functools.partial(self.to_str(), encoding='unicode'), 
+                        to_str_method=functools.partial(self.to_str_callable, encoding='unicode'), 
                         to_csv_method=self.to_csv_callable)
         return animal
     
     def add_param(self, key, value):
         prop = element_tree.SubElement(self._data, key)
         prop.text = str(value)
-    
-    # TODO: Having a to_string method that returns a callable is confusing
-    # change this to a member with another name.
-    def to_str(self):
-        return element_tree.tostring
 
 @dataclass
 class Animal():
