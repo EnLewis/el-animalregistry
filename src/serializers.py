@@ -1,13 +1,14 @@
-from ast import Call
-import json
-import yaml
 import random
 import functools
-import xml.etree.ElementTree as element_tree
 from typing import Any, Callable
-
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+
+# Formats
+import xml.etree.ElementTree as element_tree
+import json
+import yaml
+from pandas import DataFrame
 
 class AnimalFactory:
     def __init__(self):
@@ -29,12 +30,17 @@ class AnimalFactory:
 
 class Serializer(ABC):
     
-    @abstractmethod
-    def add_param(self, key: str, val: str):
-        pass
 
     @property
     def to_str_callable(self) -> Callable:
+        pass
+
+    @property
+    def to_csv_callable(self) -> Callable:
+        pass
+
+    @abstractmethod
+    def init_data(self):
         pass
 
 class JsonSerializer(Serializer):
@@ -51,8 +57,11 @@ class JsonSerializer(Serializer):
             return ([column_headers, values])
         return _to_csv
     
-    def __call__(self, **kwargs):
+    def init_data(self):
         self._data = {}
+    
+    def __call__(self, **kwargs):
+        self.init_data()
         for key, val in kwargs.items():
             self.add_param(key, val)
         animal = Animal(data=self._data, 
@@ -85,8 +94,11 @@ class XmlSerializer(Serializer):
             return ([column_headers, values])
         return _to_csv
     
-    def __call__(self, **kwargs):
+    def init_data(self):
         self._data = element_tree.Element(self.header, attrib={'id': str(random.randint(0,10))})
+    
+    def __call__(self, **kwargs):
+        self.init_data()
         for key, val in kwargs.items():
             self.add_param(key, val)
         # This is a bit tricky, to preserve the simplicity of the Animal generic can we use partial 
@@ -99,6 +111,31 @@ class XmlSerializer(Serializer):
     def add_param(self, key, value):
         prop = element_tree.SubElement(self._data, key)
         prop.text = str(value)
+
+class PandasDFSerializer(Serializer):
+    
+    @property
+    def to_str_callable(self) -> Callable:
+        return self._data.to_string
+
+    @property
+    def to_csv_callable(self):
+        def _to_csv(data) -> tuple[list[str], list[str]]:
+            dict_data = data.to_dict(orient='records')[0]
+            column_headers=list(dict_data.keys())
+            values=list(dict_data.values())
+            return ([column_headers, values])
+        return _to_csv
+
+    def init_data(self, data):
+        self._data = DataFrame(data={key: [value] for key, value in data.items()})
+    
+    def __call__(self, **kwargs):
+        self.init_data(kwargs)
+        animal = Animal(data=self._data, 
+                        to_str_method=self.to_str_callable, 
+                        to_csv_method=self.to_csv_callable)
+        return animal
 
 @dataclass
 class Animal():

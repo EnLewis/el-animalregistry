@@ -1,10 +1,11 @@
+import pandas
 import pytest
 import json
 import yaml
 from dataclasses import dataclass, asdict
 import xml.etree.ElementTree as element_tree
 
-from serializers import AnimalFactory, JsonSerializer, XmlSerializer, YamlSerializer
+from serializers import AnimalFactory, JsonSerializer, PandasDFSerializer, XmlSerializer, YamlSerializer
 
 @dataclass
 class fake_animal_class:
@@ -25,6 +26,7 @@ def register_factory(factory):
     factory.register_format("JSON", JsonSerializer())
     factory.register_format("YAML", YamlSerializer())
     factory.register_format("XML", XmlSerializer())
+    factory.register_format("PANDAS", PandasDFSerializer())
 
 @pytest.fixture
 def fake_animal():
@@ -70,8 +72,10 @@ def test_deserialize_to_csv(factory, register_factory, fake_animal):
     xml_animal = factory.create_animal("XML", **asdict(fake_animal))
     json_animal = factory.create_animal("JSON", **asdict(fake_animal))
     yaml_animal = factory.create_animal("YAML", **asdict(fake_animal))
+    pandas_animal = factory.create_animal("PANDAS", **asdict(fake_animal))
+
 
     # Desirializing to csv should result in the same result for all formats
-    assert xml_animal.to_csv() == json_animal.to_csv() == yaml_animal.to_csv()
+    assert xml_animal.to_csv() == json_animal.to_csv() == yaml_animal.to_csv() == pandas_animal.to_csv()
     
 
