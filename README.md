@@ -34,6 +34,9 @@ options:
   --format FR  Format to serialize data into. Allowed formats are JSON, XML, YAML, PANDAS
 ```
 
+# Enhancements
+Adding support for collecting animals together into group formats rather than individuals. This could be done through adding overriding the concatonation operator for the animal object with the serializer, then contonating the objects instead of appending them to a list.
+
 # Clarifications
 - 'query a list of supported formats', query implies searchability. Does this need to support search or is it enough to provide the supported formats in a help string.
 - I'm not sure where to go with display the data. Does this want me to display in different applications? (Webpage, console output, excel) or different styles? (Dataframe, graph, list, table). For now I've chosen to display it in console as raw strings and in a table, would that be sufficient?

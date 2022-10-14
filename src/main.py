@@ -23,9 +23,9 @@ def main(factory, fp, format):
     # Prep data
     animals = []
     with open(fp, newline='') as f:
-        freader = csv.reader(f)
+        freader = csv.DictReader(f)
         for row in freader:
-            animals.append(dict(name=row[0], phone=row[1], address=row[2]))
+            animals.append(row)
     
     # Serialize based on format
     serialized_animals = []
