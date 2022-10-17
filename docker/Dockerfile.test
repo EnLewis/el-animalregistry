@@ -1,0 +1,15 @@
+FROM ubuntu:latest
+WORKDIR /app
+COPY ["py*", "requirements.txt", "./"]
+COPY ["src/", "src/"]
+COPY ["tests/", "tests/"]
+
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install python3-pip -y
+
+RUN pip install --upgrade pip
+RUN pip install pytest
+RUN pip install -r requirements.txt
+RUN chmod +x ../app
+
+ENTRYPOINT [ "bash" ]
