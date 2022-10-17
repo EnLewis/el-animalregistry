@@ -68,7 +68,7 @@ I achieve this by using a factory with pre-defined `Serializer()` objects for ea
 Changing the serializer for a given format is as easy as registering a new `Serializer()` for that format with the factory. This is done in the `test_serialize_json_to_yaml` test in `tests/serializer_test.py`. 
 
 ## Adding support for additional formats
-An example of this is on the `add_pickle_support` branch, which adds support for the python pickle data format.
+An example of this is on the `add_pickle_support` branch in [#1](https://github.com/EnLewis/el-animalregistry/pull/1), which adds support for the python pickle data format.
 
 ## Pitfalls
 An issue I ran into was that I needed the outputed `Animal()` objects to be able to have format specific methods for deserialization. (to_str, to_csv) which meant creating format specific objects which felt like overkill to me. If I already have a format specific serializer then I shouldn't need another format specific object definition (e.g: JsonSerializer + JsonAnimal). So I used some dynamic object creation strategies to reuse a generic `Animal` object. This way I can keep all my format specific code corralled to the serializer object definition.   
