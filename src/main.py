@@ -58,8 +58,8 @@ if __name__ == "__main__":
     factory = init_factory()
     if not DEBUG:
         parser = argparse.ArgumentParser(description='International Animal Registry')
-        parser.add_argument('-f', metavar='F', type=str, required=True, help="File containing personal data.")
-        parser.add_argument('--format', metavar='FR', type=str, choices=list(supported_formats.keys()), required=True, help='Format to serialize data into. Allowed formats are '+', '.join(list(supported_formats.keys())))
+        parser.add_argument('-f', metavar='FILE', type=str, required=True, help="File containing personal data.")
+        parser.add_argument('--format', metavar='FORMAT', type=str, choices=list(supported_formats.keys()), required=True, help='Format to serialize data into. Allowed formats are '+', '.join(list(supported_formats.keys())))
         args = parser.parse_args()
         
         main(factory, args.f, args.format)
@@ -67,11 +67,3 @@ if __name__ == "__main__":
         f = 'src/animals.csv'
         format = "PANDAS"
         main(factory, f, format)
-
-# def get_random_phone():
-#     return random.randint(100000000, 999999999)
-
-# with open('animals.csv', 'w', newline='') as csvfile:
-#     spamwriter = csv.writer(csvfile)
-#     for i in range(0, len(ADDRESSES), 2):
-#         spamwriter.writerow([random.choice(NAMES), str(get_random_phone()) ,ADDRESSES[i].strip('.')])
