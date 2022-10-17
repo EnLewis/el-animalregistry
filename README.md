@@ -3,8 +3,8 @@ A tool for registering animals in multiple formats.
 
 # Quick-Start
 ```bash
-git clone <this_repo>
-cd <repo>
+git clone https://github.com/EnLewis/el-animalregistry.git
+cd el-animalregistry
 ```
 ## Python Venv
 To get started with the app ensure you have Python3.8 or greater installed and run the following commands in terminal.  
