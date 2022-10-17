@@ -6,7 +6,8 @@ A tool for registering animals in multiple formats.
 git clone https://github.com/EnLewis/el-animalregistry.git
 cd el-animalregistry
 ```
-## Python Venv
+To use the app, users can get started with either a local python venv or docker.
+### Python Venv
 To get started with the app ensure you have Python3.8 or greater installed and run the following commands in terminal.  
 
 0. If you already have `python-venv` installed skip this step.
@@ -20,7 +21,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Docker
+### Docker
 0. If you don't have docker installed follow the instruction at the [docker install guide](https://docs.docker.com/engine/install/ubuntu/).
 1. Build and run docker container.
 ```bash
@@ -35,7 +36,7 @@ python src/main.py -f src/animals.csv --format <format>
 ```
 This command will display your data in it's raw string form (to_str) for the selected format, and in a rich text table (to_csv). 
 
-## Query supported formats
+### Query supported formats
 The help action will list the supported formats.  
 
 ex:
@@ -50,7 +51,7 @@ options:
   -f FILE      File containing personal data.
   --format FR  Format to serialize data into. Allowed formats are JSON, XML, YAML, PANDAS
 ```
-## Testing 
+### Testing 
 To run the included tests use
 ```bash
 pytest -v
